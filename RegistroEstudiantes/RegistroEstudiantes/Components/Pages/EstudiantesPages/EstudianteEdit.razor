@@ -1,0 +1,103 @@
+﻿@page "/Estudiante/Edit/{EstudianteId:int}"
+
+@inject EstudiantesService estudiantesService
+@inject ToastService toastService
+@inject NavigationManager navigationManager
+
+@*HTML*@
+<PageTitle>Modificar</PageTitle>
+<EditForm Model="Estudiante" OnValidSubmit="Modificar">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="container">
+        <div class="card shadow-lg">
+            <div class="card-header text-center">
+                <h5 class="card-title">Modificar Estudiante</h5>
+            </div>
+
+            <div class="card-body">
+
+                @*Nombres*@
+                <div class="mb-3">
+                    <label class="form-label"><strong>Nombres</strong></label>
+                    <InputText class="form-control" @bind-Value="Estudiante.Nombres"></InputText>
+                    <ValidationMessage For="(() => Estudiante.Nombres)" />
+                </div>
+
+                @*Direccion*@
+                <div class="mb-3">
+                    <label class="form-label"><strong>Direcci&oacute;n</strong></label>
+                    <InputText class="form-control" @bind-Value="Estudiante.Direccion"></InputText>
+                    <ValidationMessage For="(() => Estudiante.Direccion)" />
+                </div>
+
+                @*Email*@
+                <div class="mb-3">
+                    <label class="form-label"><strong>Email</strong></label>
+                    <InputText class="form-control" @bind-Value="Estudiante.Email"></InputText>
+                    <ValidationMessage For="(() => Estudiante.Email)" />
+                </div>
+
+                @*FechaNacimiento*@
+                <div class="mb-3">
+                    <label class="form-label"><strong>Fecha de Nacimiento</strong></label>
+                    <InputDate class="form-control" @bind-Value="Estudiante.FechaNacimiento"></InputDate>
+                    <ValidationMessage For="(() => Estudiante.FechaNacimiento)" />
+                </div>
+
+            </div>
+
+            @*footer*@
+            <div class="card-footer text-center mt-2">
+                <a href="/Estudiante/Index" class="btn btn-secondary">
+                    <span class="bi bi-arrow-left"></span> Volver
+                </a>
+                <button type="submit" class="btn btn-primary bi bi-floppy"> Modificar</button>
+                <button type="button" class="btn btn-danger bi bi-trash" @onclick="Eliminar"> Eliminar</button>
+            </div>
+        </div>
+    </div>
+</EditForm>
+
+@code {
+    [Parameter]
+    public int EstudianteId { get; set; }
+
+    public Estudiantes Estudiante { get; set; } = new Estudiantes();
+    public string Mensaje { get; set; } = string.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        Estudiante = await estudiantesService.Buscar(EstudianteId);
+    }
+
+    public async Task Modificar()
+    {
+        var creado = await estudiantesService.Guardar(Estudiante);
+
+        if (creado)
+        {
+            toastService.ShowSuccess("Se ha modificado correctamente");
+        }
+        else
+        {
+            toastService.ShowError("Ya existe un estudiante con ese nombre");
+        }
+    }
+
+    private async Task Eliminar()
+    {
+        var eliminado = await estudiantesService.Eliminar(Estudiante.EstudianteId);
+
+        if (eliminado)
+        {
+            toastService.ShowSuccess("Se ha eliminado correctamente");
+            navigationManager.NavigateTo("/Estudiante/Index");
+        }
+        else
+        {
+            toastService.ShowError("No se ha podido eliminar correctamente");
+        }
+    }
+}

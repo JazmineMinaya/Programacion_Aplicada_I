@@ -1,0 +1,158 @@
+﻿@page "/Libro/Edit/{LibroId:int}"
+@inject LibrosService librosService
+@using Radzen
+@inject NotificationService notificationService
+@inject NavigationManager navigationManager
+
+@*HTML*@
+<PageTitle>Edit</PageTitle>
+<EditForm Model="Libro" OnValidSubmit="Guardar">
+    <DataAnnotationsValidator />
+
+    <div class="container">
+        <div class="card shadow-lg">
+            <div class="card-header text-center">
+                <h5 class="card-title">Libro</h5>
+            </div>
+
+            <div class="card-body">
+
+                @* LibroId *@
+                <div class="mb-3">
+                    <label class="form-label"><strong>LibroId</strong></label>
+                    <InputNumber class="form-control" @bind-Value="Libro.LibroId" readonly></InputNumber>
+                </div>
+
+                @* Titulo *@
+                <div class="mb-3">
+                    <label class="form-label"><strong>Titulo</strong></label>
+                    <InputText class="form-control" @bind-Value="Libro.Titulo"></InputText>
+                    <ValidationMessage For="@(() => Libro.Titulo)" />
+                </div>
+
+                @* Autor *@
+                <div class="mb-3">
+                    <label class="form-label"><strong>Autor</strong></label>
+                    <InputText class="form-control" @bind-Value="Libro.Autor"></InputText>
+                    <ValidationMessage For="@(() => Libro.Autor)" />
+                </div>
+
+                @* AnoPublicacion *@
+                <div class="mb-3">
+                    <label class="form-label"><strong>AnoPublicacion</strong></label>
+                    <InputNumber class="form-control" @bind-Value="Libro.AnoPublicacion"></InputNumber>
+                    <ValidationMessage For="@(() => Libro.AnoPublicacion)" />
+                </div>
+            </div>
+
+            @*footer*@
+            <div class="card-footer d-flex justify-content-center gap-3 mt-2">
+                <a href="/Libro/Index" class="btn btn-secondary"> <span class="bi bi-arrow-left"></span> Volver</a>
+                <button type="submit" class="btn btn-primary bi bi-floppy"> Modificar</button>
+                <button type="button" class="btn btn-danger bi bi-trash" @onclick="Eliminar"> Eliminar</button>
+            </div>
+        </div>
+    </div>
+</EditForm>
+
+@code {
+    [Parameter]
+    public int LibroId { get; set; }
+
+    public Libro Libro { get; set; } = new Libro();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await Buscar();
+    }
+
+    public async Task Buscar()
+    {
+        var encontrado = await librosService.Buscar(LibroId);
+
+        if (encontrado != null)
+        {
+            Libro = encontrado;
+        }
+        else
+        {
+            notificationService.Notify(new NotificationMessage
+            {
+                Severity = NotificationSeverity.Error,
+                Summary = "Error",
+                Detail = "Registro No Encontrado.",
+                Duration = 5000
+            });
+        }
+    }
+
+    public async Task Guardar()
+    {
+        var existe = await librosService.TituloExiste(Libro.Titulo, Libro.LibroId);
+
+        if (existe)
+        {
+            notificationService.Notify(new NotificationMessage
+            {
+                Severity = NotificationSeverity.Error,
+                Summary = "Error",
+                Detail = "Ya existe un libro con este título.",
+                Duration = 5000
+            });
+
+            return;
+        }
+
+        var guardo = await librosService.Guardar(Libro);
+
+        if (guardo)
+        {
+            notificationService.Notify(new NotificationMessage
+            {
+                Severity = NotificationSeverity.Success,
+                Summary = "Guardado",
+                Detail = "Registro Guardado Correctamente.",
+                Duration = 5000
+            });
+
+            navigationManager.NavigateTo("/Libro/Index");
+        }
+        else
+        {
+            notificationService.Notify(new NotificationMessage
+            {
+                Severity = NotificationSeverity.Error,
+                Summary = "Error",
+                Detail = "Error al Guardar el Registro.",
+                Duration = 5000
+            });
+        }
+    }
+
+    public async Task Eliminar()
+    {
+        var eliminado = await librosService.Eliminar(Libro.LibroId);
+
+        if (eliminado)
+        {
+            notificationService.Notify(new NotificationMessage
+            {
+                Severity = NotificationSeverity.Success,
+                Summary = "Eliminado",
+                Detail = "Registro Eliminado Correctamente.",
+                Duration = 5000
+            });
+            navigationManager.NavigateTo("/Libro/Index");
+        }
+        else
+        {
+            notificationService.Notify(new NotificationMessage
+            {
+                Severity = NotificationSeverity.Error,
+                Summary = "Error",
+                Detail = "Error al Eliminar el Registro.",
+                Duration = 5000
+            });
+        }
+    }
+}
