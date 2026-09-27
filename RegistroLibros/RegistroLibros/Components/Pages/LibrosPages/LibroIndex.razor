@@ -1,0 +1,119 @@
+﻿@page "/Libro/Index"
+@inject LibrosService librosService
+@inject NotificationService notificationService
+@inject NavigationManager navigationManager
+
+@*HTML*@
+<PageTitle>Consulta de Libros</PageTitle>
+
+<div class="container">
+
+    @* Encabezado *@
+    <div class="d-flex justify-content-between align-items-center">
+        <h5>Consulta de Libros</h5>
+        <a href="/Libro/Create" class="btn btn-primary"><span class="bi bi-plus"></span> Crear</a>
+    </div>
+
+    <hr />
+
+    @* Filtros *@
+    <div class="row">
+
+        @* Filtrar por *@
+        <div class="col-md-3">
+            <label class="form-label"><strong>Filtrar por</strong></label>
+            <select class="form-select">
+                <option>Elija una opción</option>
+                <option>Titulo</option>
+                <option>AnoPublicacion</option>
+            </select>
+        </div>
+
+        @* Búsqueda *@
+        <div class="col-md-4">
+            <label class="form-label"><strong>Búsqueda</strong></label>
+            <div class="input-group">
+                <input class="form-control" placeholder="Buscar" />
+                <button class="btn btn-outline-secondary"><span class="bi bi-search"></span></button>
+            </div>
+        </div>
+
+    </div>
+
+    @* Tabla *@
+    <table class="table mt-3">
+        <thead>
+            <tr>
+                <th>LibroId</th>
+                <th>Título</th>
+                <th>Autor</th>
+                <th>Año Publicación</th>
+                <th>Opciones</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @foreach (var libro in ListaLibros)
+            {
+                <tr>
+                    <td>@libro.LibroId</td>
+                    <td>@libro.Titulo</td>
+                    <td>@libro.Autor</td>
+                    <td>@libro.AnoPublicacion</td>
+
+                    <td>
+                        @* Editar *@
+                        <a href="@($"/Libro/Edit/{libro.LibroId}")" class="btn btn-outline-primary"><span class="bi bi-pencil"></span></a>
+
+                        @* Eliminar *@
+                        <button class="btn btn-outline-danger" @onclick="() => Eliminar(libro.LibroId)"><span class="bi bi-trash"></span></button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    @* Cantidad de registros *@
+    <div>
+        Cantidad: @ListaLibros.Count
+    </div>
+
+</div>
+
+@code {
+    public List<Libro> ListaLibros { get; set; } = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        ListaLibros = await librosService.GetList(libro => true);
+    }
+
+    public async Task Eliminar(int libroId)
+    {
+        var eliminado = await librosService.Eliminar(libroId);
+
+        if (eliminado)
+        {
+            notificationService.Notify(new NotificationMessage
+            {
+                Severity = NotificationSeverity.Success,
+                Summary = "Eliminado",
+                Detail = "Registro Eliminado Correctamente.",
+                Duration = 5000
+            });
+
+            // actualizar la tabla
+            ListaLibros = await librosService.GetList(libro => true);
+        }
+        else
+        {
+            notificationService.Notify(new NotificationMessage
+            {
+                Severity = NotificationSeverity.Error,
+                Summary = "Error",
+                Detail = "Error al Eliminar el Registro.",
+                Duration = 5000
+            });
+        }
+    }
+}

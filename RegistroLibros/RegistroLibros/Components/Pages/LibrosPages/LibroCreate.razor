@@ -1,0 +1,104 @@
+﻿@page "/Libro/Create"
+@inject LibrosService librosService
+@inject NotificationService notificationService
+@inject NavigationManager navigationManager
+
+@*HTML*@
+<PageTitle>Create</PageTitle>
+<EditForm Model="Libro" OnValidSubmit="Guardar">
+	<DataAnnotationsValidator />
+
+	<div class="container">
+		<div class="card shadow-lg">
+			<div class="card-header text-center">
+				<h5 class="card-title">Crear Libro</h5>
+			</div>
+
+			<div class="card-body ">
+
+				@* LibroId *@
+				<div class="mb-3">
+					<label class="form-label"><strong>LibroId</strong></label>
+					<InputNumber class="form-control" @bind-Value="Libro.LibroId" readonly></InputNumber>
+				</div>
+
+				@* Título *@
+				<div class="mb-3">
+					<label class="form-label"><strong>Título</strong></label>
+					<InputText class="form-control" @bind-Value="Libro.Titulo"></InputText>
+					<ValidationMessage For="(() => Libro.Titulo)" />
+				</div>
+
+				@* Autor *@
+				<div class="mb-3">
+					<label class="form-label"><strong>Autor</strong></label>
+					<InputText class="form-control" @bind-Value="Libro.Autor"></InputText>
+					<ValidationMessage For="(() => Libro.Autor)" />
+				</div>
+
+				@* Año Publicación *@
+				<div class="mb-3">
+					<label class="form-label"><strong>AnoPublicacion</strong></label>
+					<InputNumber class="form-control" @bind-Value="Libro.AnoPublicacion"></InputNumber>
+					<ValidationMessage For="@(() => Libro.AnoPublicacion)" />
+				</div>
+			</div>
+
+			@*footer*@
+			<div class="card-footer d-flex justify-content-center gap-3 mt-2">
+				<a href="/Libro/Index" class="btn btn-secondary"> <span class="bi bi-arrow-left"></span> Volver</a>
+				<button type="submit" class="btn btn-primary bi bi-floppy"> Guardar</button>
+			</div>
+		</div>
+	</div>
+</EditForm>
+
+@code {
+	public Libro Libro { get; set; } = new Libro();
+
+	public void Nuevo()
+	{
+		this.Libro = new Libro();
+	}
+
+	public async Task Guardar()
+	{
+		var existe = await librosService.TituloExiste(Libro.Titulo);
+
+		if (existe)
+		{
+			notificationService.Notify(new NotificationMessage
+			{
+				Severity = NotificationSeverity.Error,
+				Summary = "Error",
+				Detail = "Ya existe un libro con este título.",
+				Duration = 5000
+			});
+
+			return;
+		}
+
+		var guardado = await librosService.Guardar(Libro);
+
+		if (guardado)
+		{
+			notificationService.Notify(new NotificationMessage
+			{
+				Severity = NotificationSeverity.Success,
+				Summary = "Guardado",
+				Detail = "Registro Guardado Correctamente.",
+				Duration = 5000
+			});
+		}
+		else
+		{
+			notificationService.Notify(new NotificationMessage
+			{
+				Severity = NotificationSeverity.Error,
+				Summary = "Error",
+				Detail = "Error al Guardar el Registro.",
+				Duration = 5000
+			});
+		}
+	}
+}
