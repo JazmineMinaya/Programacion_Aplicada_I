@@ -1,8 +1,8 @@
+using BlazorBootstrap;
+using Microsoft.EntityFrameworkCore;
 using RegistroEstudiantes.Components;
 using RegistroEstudiantes.Context;
 using RegistroEstudiantes.Services;
-using Microsoft.EntityFrameworkCore;
-using BlazorBootstrap;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,6 +14,8 @@ var ConStr = builder.Configuration.GetConnectionString("SqlConStr");
 builder.Services.AddDbContextFactory<Contexto>(o => o.UseSqlServer(ConStr));
 
 builder.Services.AddScoped<EstudiantesService>();
+builder.Services.AddScoped<LibrosService>();
+builder.Services.AddScoped<PrestamosService>();
 
 builder.Services.AddBlazorBootstrap();
 

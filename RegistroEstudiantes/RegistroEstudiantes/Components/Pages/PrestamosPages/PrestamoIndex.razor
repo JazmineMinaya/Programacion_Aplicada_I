@@ -1,0 +1,219 @@
+﻿@page "/Prestamo/Index"
+
+@inject PrestamosService prestamosService
+
+<PageTitle>Registro de Préstamos</PageTitle>
+
+<div class="container">
+    <div class="card shadow-lg">
+
+        <div class="card-header d-flex justify-content-between align-center mb-4">
+            <h5 class="card-title">Registro de Préstamos</h5>
+
+            <a href="/Prestamo/Create" class="btn btn-primary">
+                <span class="bi bi-plus-square mt-3"></span> Crear
+            </a>
+        </div>
+
+        <div class="card-body">
+
+            @* Labels *@
+            <div class="row">
+
+                @* Filtrar por *@
+                <div class="col-3">
+                    <label class="col-form-label">
+                        <strong>Filtrar por</strong>
+                    </label>
+                </div>
+
+                @* ValorFiltro *@
+                <div class="col-4">
+                    <label class="col-form-label">
+                        <strong>Búsqueda</strong>
+                    </label>
+                </div>
+
+            </div>
+
+            @* Inputs y botones *@
+            <div class="row align-items-center mb-4">
+
+                @* Filtro *@
+                <div class="col-3">
+                    <InputSelect class="form-select" @bind-Value="Filtro">
+                        <option value="" selected disabled>Elija una opción</option>
+                        <option value="Estudiante">Estudiante</option>
+                        <option value="Libro">Libro</option>
+                    </InputSelect>
+                </div>
+
+                @* Búsqueda *@
+                <div class="col-4">
+                    <div class="input-group">
+                        <input class="form-control"
+                               @bind="ValorFiltro"
+                               placeholder="Buscar" />
+
+                        <button type="button"
+                                class="btn btn-outline-primary bi bi-search"
+                                @onclick="Buscar">
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+
+           <QuickGrid Items="ListaPrestamos.AsQueryable()"
+                   Pagination="Paginacion"
+                   Class="prestamos-grid">
+
+            <ColGroup>
+                <col style="width: 10%;" />
+                <col style="width: 30%;" />
+                <col style="width: 13%;" />
+                <col style="width: 27%;" />
+                <col style="width: 20%;" />
+            </ColGroup>
+
+            <PropertyColumn Property="@(p => p.PrestamoId)"
+                            Title="PrestamoId"
+                            Sortable="true" />
+
+            <PropertyColumn Property="@(p => p.Estudiante!.Nombres)"
+                            Title="Estudiante"
+                            Sortable="true" />
+
+            <PropertyColumn Property="@(p => p.Libro!.Titulo)"
+                            Title="Libro"
+                            Sortable="true" />
+
+            <PropertyColumn Property="@(p => p.FechaPrestamo)"
+                            Title="Fecha de Préstamo"
+                            Format="dd/MM/yyyy"
+                            Sortable="true" />
+
+            <TemplateColumn Title="Opciones">
+                    <a href="/Prestamo/Edit/@context.PrestamoId"
+                       class="btn btn-outline-primary bi bi-pencil-square">
+                    </a>
+            </TemplateColumn>
+        </QuickGrid>
+
+            @* Paginación *@
+            <div class="mt-3 paginacion-prestamos">
+                <Paginator State="Paginacion" />
+            </div>
+
+        </div>
+
+        <div class="card-footer d-flex justify-content-between align-center">
+            <label>Cantidad: @ListaPrestamos.Count()</label>
+        </div>
+
+    </div>
+</div>
+
+<style>
+    .paginacion-prestamos > div > div:first-child {
+        display: none;
+    }
+
+    .prestamos-grid {
+        width: 100%;
+    }
+
+    .prestamos-grid td {
+        padding-left: 15px !important;
+        padding-right: 15px !important;
+        vertical-align: middle;
+    }
+
+    .prestamos-grid th {
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+    }
+
+    .prestamos-grid th button {
+        padding-left: 15px !important;
+        padding-right: 15px !important;
+        width: 100%;
+        justify-content: flex-start;
+    }
+
+    .prestamos-grid th:last-child,
+    .prestamos-grid td:last-child {
+        text-align: center !important;
+    }
+
+    .prestamos-grid th:last-child .col-title,
+    .prestamos-grid th:last-child button {
+        width: 100% !important;
+        justify-content: center !important;
+        text-align: center !important;
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+    }
+</style>
+
+@code {
+
+    public List<Prestamos> ListaPrestamos { get; set; } = new List<Prestamos>();
+
+    public string Filtro { get; set; } = string.Empty;
+
+    public string ValorFiltro { get; set; } = string.Empty;
+
+    public PaginationState Paginacion { get; set; } =
+        new PaginationState { ItemsPerPage = 5 };
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        ListaPrestamos = await prestamosService
+            .GetList(p => p.PrestamoId > 0);
+    }
+
+
+    private async Task Buscar()
+    {
+        if (ValorFiltro.Trim() != "")
+        {
+            if (Filtro == "Estudiante")
+            {
+                ListaPrestamos = await prestamosService.GetList(
+                    p => p.Estudiante!.Nombres
+                        .ToLower()
+                        .Contains(ValorFiltro.ToLower())
+                );
+            }
+            else if (Filtro == "Libro")
+            {
+                ListaPrestamos = await prestamosService.GetList(
+                    p => p.Libro!.Titulo
+                        .ToLower()
+                        .Contains(ValorFiltro.ToLower())
+                );
+            }
+        }
+        else
+        {
+            ListaPrestamos = await prestamosService
+                .GetList(p => p.PrestamoId > 0);
+        }
+
+        await Paginacion.SetCurrentPageIndexAsync(0);
+    }
+
+
+    private async Task Restablecer()
+    {
+        ListaPrestamos = await prestamosService
+            .GetList(p => p.PrestamoId > 0);
+
+        Filtro = string.Empty;
+        ValorFiltro = string.Empty;
+
+        await Paginacion.SetCurrentPageIndexAsync(0);
+    }
+}

@@ -1,0 +1,182 @@
+﻿@page "/Prestamo/Edit/{PrestamoId:int}"
+
+@inject PrestamosService prestamosService
+@inject EstudiantesService estudiantesService
+@inject LibrosService librosService
+@inject ToastService toastService
+@inject NavigationManager navigationManager
+
+@*HTML*@
+<PageTitle>Modificar</PageTitle>
+<EditForm Model="Prestamo" OnValidSubmit="Modificar">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="container">
+        <div class="card shadow-lg">
+            <div class="card-header text-center">
+                <h5 class="card-title">Modificar Préstamo</h5>
+            </div>
+
+            <div class="card-body">
+
+                @*Estudiante*@
+                <div class="mb-3">
+                    <label class="form-label"><strong>Estudiante</strong></label>
+                    <InputSelect class="form-select" @bind-Value="Prestamo.EstudianteId">
+                        <option value="0">Elija un estudiante</option>
+
+                        @foreach (var estudiante in ListaEstudiantes)
+                        {
+                            <option value="@estudiante.EstudianteId">
+                                @estudiante.Nombres
+                            </option>
+                        }
+                    </InputSelect>
+                </div>
+
+                @*Libro*@
+                <div class="mb-3">
+                    <label class="form-label"><strong>Libro</strong></label>
+                    <InputSelect class="form-select" @bind-Value="Prestamo.LibroId">
+                        <option value="0">Elija un libro</option>
+
+                        @foreach (var libro in ListaLibros)
+                        {
+                            <option value="@libro.LibroId">
+                                @libro.Titulo
+                            </option>
+                        }
+                    </InputSelect>
+                </div>
+
+                @*FechaPrestamo*@
+                <div class="mb-3">
+                    <label class="form-label"><strong>Fecha de Préstamo</strong></label>
+                    <InputDate class="form-control" @bind-Value="Prestamo.FechaPrestamo"></InputDate>
+                </div>
+
+            </div>
+
+            @*footer*@
+            <div class="card-footer text-center mt-2">
+
+                <a href="/Prestamo/Index" class="btn btn-secondary">
+                    <span class="bi bi-arrow-left"></span> Volver
+                </a>
+
+                <button type="submit" class="btn btn-primary bi bi-floppy">
+                    Modificar
+                </button>
+
+                @*Botón que abre el modal*@
+                <button type="button"
+                        class="btn btn-danger bi bi-trash"
+                        data-bs-toggle="modal"
+                        data-bs-target="#eliminarModal">
+                    Eliminar
+                </button>
+
+            </div>
+        </div>
+    </div>
+</EditForm>
+
+
+@*Modal para confirmar eliminación*@
+<div class="modal fade"
+     id="eliminarModal"
+     tabindex="-1"
+     aria-labelledby="eliminarModalLabel"
+     aria-hidden="true">
+
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title" id="eliminarModalLabel">
+                    Confirmar eliminación
+                </h5>
+
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"
+                        aria-label="Close">
+                </button>
+            </div>
+
+            <div class="modal-body">
+                ¿Está seguro que desea eliminar este préstamo?
+            </div>
+
+            <div class="modal-footer">
+
+                <button type="button"
+                        class="btn btn-secondary"
+                        data-bs-dismiss="modal">
+                    Cancelar
+                </button>
+
+                <button type="button"
+                        class="btn btn-danger"
+                        data-bs-dismiss="modal"
+                        @onclick="Eliminar">
+                    Eliminar
+                </button>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@code {
+    [Parameter]
+    public int PrestamoId { get; set; }
+
+    public Prestamos Prestamo { get; set; } = new Prestamos();
+    public List<Estudiantes> ListaEstudiantes { get; set; } = new List<Estudiantes>();
+    public List<Libro> ListaLibros { get; set; } = new List<Libro>();
+    public string Mensaje { get; set; } = string.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        Prestamo = await prestamosService.Buscar(PrestamoId);
+
+        ListaEstudiantes = await estudiantesService
+            .GetList(e => e.EstudianteId > 0);
+
+        ListaLibros = await librosService
+            .GetList(l => l.Disponible == true || l.LibroId == Prestamo.LibroId);
+    }
+
+    public async Task Modificar()
+    {
+        var modificado = await prestamosService.Guardar(Prestamo);
+
+        if (modificado)
+        {
+            toastService.ShowSuccess("Se ha modificado correctamente");
+            navigationManager.NavigateTo("/Prestamo/Index");
+        }
+        else
+        {
+            toastService.ShowError("No se ha podido modificar correctamente");
+        }
+    }
+
+    private async Task Eliminar()
+    {
+        var eliminado = await prestamosService.Eliminar(Prestamo.PrestamoId);
+
+        if (eliminado)
+        {
+            toastService.ShowSuccess("Se ha eliminado correctamente");
+            navigationManager.NavigateTo("/Prestamo/Index");
+        }
+        else
+        {
+            toastService.ShowError("No se ha podido eliminar correctamente");
+        }
+    }
+}

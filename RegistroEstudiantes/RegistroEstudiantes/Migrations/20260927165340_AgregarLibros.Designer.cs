@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using RegistroEstudiantes.Context;
 
@@ -11,9 +12,11 @@ using RegistroEstudiantes.Context;
 namespace RegistroEstudiantes.Migrations
 {
     [DbContext(typeof(Contexto))]
-    partial class ContextoModelSnapshot : ModelSnapshot
+    [Migration("20260927165340_AgregarLibros")]
+    partial class AgregarLibros
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -65,9 +68,6 @@ namespace RegistroEstudiantes.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool>("Disponible")
-                        .HasColumnType("bit");
-
                     b.Property<string>("Titulo")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -75,51 +75,6 @@ namespace RegistroEstudiantes.Migrations
                     b.HasKey("LibroId");
 
                     b.ToTable("Libros");
-                });
-
-            modelBuilder.Entity("RegistroEstudiantes.Models.Prestamos", b =>
-                {
-                    b.Property<int>("PrestamoId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PrestamoId"));
-
-                    b.Property<int>("EstudianteId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("FechaPrestamo")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("LibroId")
-                        .HasColumnType("int");
-
-                    b.HasKey("PrestamoId");
-
-                    b.HasIndex("EstudianteId");
-
-                    b.HasIndex("LibroId");
-
-                    b.ToTable("Prestamos");
-                });
-
-            modelBuilder.Entity("RegistroEstudiantes.Models.Prestamos", b =>
-                {
-                    b.HasOne("RegistroEstudiantes.Models.Estudiantes", "Estudiante")
-                        .WithMany()
-                        .HasForeignKey("EstudianteId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("RegistroEstudiantes.Models.Libro", "Libro")
-                        .WithMany()
-                        .HasForeignKey("LibroId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Estudiante");
-
-                    b.Navigation("Libro");
                 });
 #pragma warning restore 612, 618
         }
