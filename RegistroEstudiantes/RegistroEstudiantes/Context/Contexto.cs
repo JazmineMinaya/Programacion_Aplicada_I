@@ -7,6 +7,8 @@ namespace RegistroEstudiantes.Context
     {
         public Contexto(DbContextOptions<Contexto> options) : base(options) { }
 
+        public DbSet<Libro> Libros { get; set; }
         public DbSet<Estudiantes> Estudiantes { get; set; }
+        public DbSet<Prestamos> Prestamos { get; set; }
     }
 }

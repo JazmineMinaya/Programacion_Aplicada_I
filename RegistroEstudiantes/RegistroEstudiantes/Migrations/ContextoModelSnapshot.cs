@@ -49,6 +49,78 @@ namespace RegistroEstudiantes.Migrations
 
                     b.ToTable("Estudiantes");
                 });
+
+            modelBuilder.Entity("RegistroEstudiantes.Models.Libro", b =>
+                {
+                    b.Property<int>("LibroId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("LibroId"));
+
+                    b.Property<int>("AnoPublicacion")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Autor")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("Disponible")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Titulo")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("LibroId");
+
+                    b.ToTable("Libros");
+                });
+
+            modelBuilder.Entity("RegistroEstudiantes.Models.Prestamos", b =>
+                {
+                    b.Property<int>("PrestamoId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PrestamoId"));
+
+                    b.Property<int>("EstudianteId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("FechaPrestamo")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("LibroId")
+                        .HasColumnType("int");
+
+                    b.HasKey("PrestamoId");
+
+                    b.HasIndex("EstudianteId");
+
+                    b.HasIndex("LibroId");
+
+                    b.ToTable("Prestamos");
+                });
+
+            modelBuilder.Entity("RegistroEstudiantes.Models.Prestamos", b =>
+                {
+                    b.HasOne("RegistroEstudiantes.Models.Estudiantes", "Estudiante")
+                        .WithMany()
+                        .HasForeignKey("EstudianteId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("RegistroEstudiantes.Models.Libro", "Libro")
+                        .WithMany()
+                        .HasForeignKey("LibroId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Estudiante");
+
+                    b.Navigation("Libro");
+                });
 #pragma warning restore 612, 618
         }
     }
