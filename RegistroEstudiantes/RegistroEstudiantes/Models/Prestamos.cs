@@ -18,7 +18,7 @@ namespace RegistroEstudiantes.Models
         public DateTime FechaPrestamo { get; set; }
 
         [ForeignKey("EstudianteId")]
-        public Estudiantes? Estudiante { get; set; }
+        public virtual Estudiantes? Estudiante { get; set; }
 
         [ForeignKey("LibroId")]
         public virtual Libro? Libro { get; set; }
