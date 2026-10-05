@@ -76,10 +76,12 @@
 </EditForm>
 
 @code {
-    public Prestamos Prestamo { get; set; } = new Prestamos()
-    {
-        FechaPrestamo = DateTime.Today
-    };
+    public Prestamos Prestamo { get; set; } = new Prestamos();
+
+    protected override void OnInitialized()
+	{
+		Prestamo.FechaPrestamo = DateTime.Today;
+	}
 
     public List<Estudiantes> ListaEstudiantes { get; set; } = new();
     public List<Libro> ListaLibros { get; set; } = new();
