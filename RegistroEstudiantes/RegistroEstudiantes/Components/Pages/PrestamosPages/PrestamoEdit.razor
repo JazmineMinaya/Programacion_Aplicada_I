@@ -150,7 +150,7 @@
             .GetList(l => l.Disponible == true || l.LibroId == Prestamo.LibroId);
     }
 
-    public async Task Modificar()
+    private async Task Modificar()
     {
         var modificado = await prestamosService.Guardar(Prestamo);
 
