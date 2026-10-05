@@ -14,7 +14,7 @@ namespace RegistroEstudiantes.Models
         public string Direccion { get; set; } = null!;
 
         [Required(ErrorMessage = "Este campo es requerido")]
-        public string Email { get; set; } = null!;
+        public string Email { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Este campo es requerido")]
         public DateTime FechaNacimiento { get; set; }
