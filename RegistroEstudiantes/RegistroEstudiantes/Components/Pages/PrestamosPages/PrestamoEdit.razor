@@ -59,7 +59,7 @@
             </div>
 
             @*footer*@
-            <div class="card-footer text-center mt-2">
+            <div class="card-footer text-center mb-2">
 
                 <a href="/Prestamo/Index" class="btn btn-secondary">
                     <span class="bi bi-arrow-left"></span> Volver
@@ -136,7 +136,7 @@
 
     public Prestamos Prestamo { get; set; } = new Prestamos();
     public List<Estudiantes> ListaEstudiantes { get; set; } = new List<Estudiantes>();
-    public List<Libro> ListaLibros { get; set; } = new List<Libro>();
+    public List<Libro> ListaLibros { get; set; } = new();
 
     protected override async Task OnInitializedAsync()
     {
