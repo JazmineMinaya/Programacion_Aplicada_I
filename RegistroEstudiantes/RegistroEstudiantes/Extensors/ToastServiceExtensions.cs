@@ -17,8 +17,8 @@ public static class ToastServiceExtensions
         return message;
     }
 
-    public static ToastMessage ShowSuccess(this ToastService toastService, string customMessage = null,
-        string title = "Success")
+    // ShowSuccess method
+    public static ToastMessage ShowSuccess(this ToastService toastService, string customMessage = null, string title = "Success")
     {
         return toastService.ShowToast(ToastType.Success, title, customMessage);
     }
@@ -29,8 +29,8 @@ public static class ToastServiceExtensions
         return toastService.ShowToast(ToastType.Warning, title, customMessage);
     }
 
-    public static ToastMessage ShowError(this ToastService toastService, string customMessage = null,
-        string title = "Error")
+    // ShowError method
+    public static ToastMessage ShowError(this ToastService toastService, string customMessage = null, string title = "Error")
     {
         return toastService.ShowToast(ToastType.Danger, title, customMessage);
     }
