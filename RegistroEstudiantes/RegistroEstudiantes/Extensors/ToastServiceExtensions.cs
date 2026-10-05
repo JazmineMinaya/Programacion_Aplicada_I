@@ -32,8 +32,7 @@ public static class ToastServiceExtensions
     }
 
     // ShowError method
-    public static ToastMessage ShowError(this ToastService toastService, string customMessage = null,
-        string title = "Error")
+    public static ToastMessage ShowError(this ToastService toastService, string customMessage = null, string title = "Error")
     {
         return toastService.ShowToast(ToastType.Danger, title, customMessage);
     }
