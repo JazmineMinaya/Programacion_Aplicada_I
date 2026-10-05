@@ -25,8 +25,7 @@ public static class ToastServiceExtensions
     }
 
     // ShowWarning method
-    public static ToastMessage ShowWarning(this ToastService toastService, string customMessage = null,
-        string title = "Warning")
+    public static ToastMessage ShowWarning(this ToastService toastService, string customMessage = null, string title = "Warning")
     {
         return toastService.ShowToast(ToastType.Warning, title, customMessage);
     }
