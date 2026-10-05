@@ -8,10 +8,10 @@ public partial class Libro
     public int LibroId { get; set; }
 
     [Required(ErrorMessage = "El título es obligatorio")]
-    public string Titulo { get; set; } = "";
+    public string Titulo { get; set; } = string.Empty;
 
     [Required(ErrorMessage = "El autor es obligatorio")]
-    public string Autor { get; set; } = "";
+    public string Autor { get; set; } = string.Empty;
 
     [Required(ErrorMessage = "El año de publicación es obligatorio")]
     public int AnoPublicacion { get; set; }
