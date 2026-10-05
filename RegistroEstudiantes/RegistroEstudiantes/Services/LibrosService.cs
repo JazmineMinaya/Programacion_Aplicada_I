@@ -36,8 +36,7 @@ public class LibrosService(
     {
         await using var contexto = await contextFactory.CreateDbContextAsync();
         contexto.Update(libro);
-        return await contexto
-            .SaveChangesAsync() > 0;
+        return await contexto.SaveChangesAsync() > 0;
     }
 
     public async Task<bool> Guardar(Libro libro)
