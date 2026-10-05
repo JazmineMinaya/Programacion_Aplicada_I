@@ -52,8 +52,7 @@ public class EstudiantesService(
     {
         await using var contexto = await contextFactory.CreateDbContextAsync();
         contexto.Update(estudiante);
-        return await contexto
-            .SaveChangesAsync() > 0;
+        return await contexto.SaveChangesAsync() > 0;
     }
 
     public async Task<Estudiantes?> Buscar(int estudianteId)
