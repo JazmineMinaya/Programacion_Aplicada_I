@@ -9,7 +9,7 @@ namespace RegistroEstudiantes.Services;
 
 public class PrestamosService(
     IDbContextFactory<Contexto> contextFactory
-) : Aplicada1.Core.IService<Prestamos,int>
+) : Aplicada1.Core.IService<Prestamos, int>
 {
     public async Task<bool> Guardar(Prestamos prestamo)
     {
