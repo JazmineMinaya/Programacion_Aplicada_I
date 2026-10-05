@@ -63,9 +63,7 @@
 @code {
     [Parameter]
     public int EstudianteId { get; set; }
-
     public Estudiantes Estudiante { get; set; } = new Estudiantes();
-    public string Mensaje { get; set; } = string.Empty;
 
     protected override async Task OnInitializedAsync()
     {
