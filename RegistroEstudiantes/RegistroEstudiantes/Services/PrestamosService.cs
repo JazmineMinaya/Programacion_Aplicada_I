@@ -59,8 +59,8 @@ public class PrestamosService(
         await using var contexto = await contextFactory.CreateDbContextAsync();
 
         return await contexto.Prestamos
-            .Include(prestamoId => prestamoId.Estudiante)
-            .Include(prestamoId => prestamoId.Libro)
+            .Include(p  => p.Estudiante)
+            .Include(p => p.Libro)
             .FirstOrDefaultAsync(p => p.PrestamoId == prestamoId);
     }
 
