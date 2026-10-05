@@ -8,7 +8,7 @@ namespace RegistroEstudiantes.Models
         public int EstudianteId { get; set; }
 
         [Required(ErrorMessage = "Este campo es requerido")]
-        public string Nombres { get; set; } = null!;
+        public string Nombres { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Este campo es requerido")]
         public string Direccion { get; set; } = string.Empty;
