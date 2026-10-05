@@ -14,6 +14,7 @@ public partial class Estudiantes
     public string Direccion { get; set; } = string.Empty;
 
     [Required(ErrorMessage = "Este campo es requerido")]
+    [EmailAddress(ErrorMessage = "Ingrese un correo electrónico válido")]
     public string Email { get; set; } = string.Empty;
 
     [Required(ErrorMessage = "Este campo es requerido")]
