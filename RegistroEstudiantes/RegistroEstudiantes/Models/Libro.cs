@@ -2,7 +2,7 @@
 
 namespace RegistroEstudiantes.Models;
 
-public class Libro
+public partial class Libro
 {
     [Key]
     public int LibroId { get; set; }
