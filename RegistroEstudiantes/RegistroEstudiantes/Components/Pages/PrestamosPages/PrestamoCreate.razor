@@ -91,7 +91,7 @@
         ListaLibros = await librosService.GetList(l => l.Disponible == true);
     }
 
-    public async Task Guardar()
+    private async Task Guardar()
     {
         var creado = await prestamosService.Guardar(Prestamo);
 
