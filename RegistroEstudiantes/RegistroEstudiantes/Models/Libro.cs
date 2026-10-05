@@ -13,7 +13,7 @@ public partial class Libro
     [Required(ErrorMessage = "El autor es obligatorio")]
     public string Autor { get; set; } = string.Empty;
 
-    [Required(ErrorMessage = "El año de publicación es obligatorio")]
+    [Range(1, int.MaxValue, ErrorMessage = "El año de publicación es obligatorio")]
     public int AnoPublicacion { get; set; }
 
     public bool Disponible { get; set; } = true;
