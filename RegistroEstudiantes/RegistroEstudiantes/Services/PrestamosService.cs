@@ -11,6 +11,18 @@ public class PrestamosService(
     IDbContextFactory<Contexto> contextFactory
 ) : Aplicada1.Core.IService<Prestamos,int>
 {
+    public async Task<bool> Guardar(Prestamos prestamo)
+    {
+        if (!await Existe(prestamo.PrestamoId))
+        {
+            return await Insertar(prestamo);
+        }
+        else
+        {
+            return await Modificar(prestamo);
+        }
+    }
+
     private async Task<bool> Existe(int prestamoId)
     {
         await using var contexto = await contextFactory.CreateDbContextAsync();
@@ -40,18 +52,6 @@ public class PrestamosService(
         await using var contexto = await contextFactory.CreateDbContextAsync();
         contexto.Update(prestamo);
         return await contexto.SaveChangesAsync() > 0;
-    }
-
-    public async Task<bool> Guardar(Prestamos prestamo)
-    {
-        if (!await Existe(prestamo.PrestamoId))
-        {
-            return await Insertar(prestamo);
-        }
-        else
-        {
-            return await Modificar(prestamo);
-        }
     }
 
     public async Task<Prestamos?> Buscar(int prestamoId)
