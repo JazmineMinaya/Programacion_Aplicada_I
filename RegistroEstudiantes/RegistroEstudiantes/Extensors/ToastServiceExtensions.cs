@@ -23,8 +23,9 @@ public static class ToastServiceExtensions
         return toastService.ShowToast(ToastType.Success, title, customMessage);
     }
 
-    public static ToastMessage ShowWarning(this ToastService toastService, string customMessage = null,
-        string title = "Warning")
+    // ShowWarning method
+    public static ToastMessage ShowWarning(this ToastService toastService, string customMessage = null, string title = "Warning")
+
     {
         return toastService.ShowToast(ToastType.Warning, title, customMessage);
     }
