@@ -17,6 +17,13 @@
 
             <div class="card-body">
 
+                @*LibroId*@ 
+                 <div class="mb-3"> 
+                     <label class="form-label"><strong>LibroId</strong></label> 
+                     <InputText class="form-control" @bind-Value="Libro.LibroId"></InputText> 
+                     <ValidationMessage For="(() => Libro.LibroId)" /> 
+                 </div> 
+
                 @*Titulo*@
                 <div class="mb-3">
                     <label class="form-label"><strong>Título</strong></label>
