@@ -1,4 +1,5 @@
 ﻿@page "/Estudiante/Index"
+@rendermode InteractiveServer
 
 @inject EstudiantesService estudiantesService
 @inject ToastService toastService
@@ -6,7 +7,7 @@
 <PageTitle>Registro de Estudiantes</PageTitle>
 <div class="container">
     <div class="card shadow-lg">
-        <div class="card-header d-flex justify-content-between align-items-center mb-4">
+        <div class="card-header d-flex justify-content-between align-center">
             <h5 class="card-title">Registro de Estudiantes</h5>
             <a href="/Estudiante/Create" class="btn btn-primary"> <span class="bi bi-plus-square"></span> Crear</a>
         </div>
