@@ -83,8 +83,6 @@
     public List<Estudiantes> ListaEstudiantes { get; set; } = new();
     public List<Libro> ListaLibros { get; set; } = new();
 
-    public string Mensaje { get; set; } = string.Empty;
-
     protected override async Task OnInitializedAsync()
     {
         ListaEstudiantes = await estudiantesService.GetList(e => e.EstudianteId > 0);
