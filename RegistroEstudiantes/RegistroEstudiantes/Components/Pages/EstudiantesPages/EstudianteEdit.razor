@@ -70,7 +70,7 @@
         Estudiante = await estudiantesService.Buscar(EstudianteId);
     }
 
-    public async Task Modificar()
+    private async Task Modificar()
     {
         var creado = await estudiantesService.Guardar(Estudiante);
 
