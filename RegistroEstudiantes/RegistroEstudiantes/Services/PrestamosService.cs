@@ -61,7 +61,7 @@ public class PrestamosService(
         return await contexto.Prestamos
             .Include(prestamoId => prestamoId.Estudiante)
             .Include(prestamoId => prestamoId.Libro)
-            .FirstOrDefaultAsync(p=> p.PrestamoId == prestamoId);
+            .FirstOrDefaultAsync(p => p.PrestamoId == prestamoId);
     }
 
     public async Task<bool> Eliminar(int prestamoId)
