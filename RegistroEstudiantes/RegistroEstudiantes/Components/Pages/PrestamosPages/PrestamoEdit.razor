@@ -23,7 +23,7 @@
                 @* PrestamoId *@
 				<div class="mb-3">
 					<label class="form-label"><strong>PrestamoId</strong></label>
-					<InputNumber class="form-control" @bind-Value="Pestamos.PrestamoId" readonly></InputNumber>
+					<InputNumber class="form-control" @bind-Value="Prestamo.PrestamoId" readonly></InputNumber>
 				</div>
 
                 @*Estudiante*@
@@ -167,21 +167,6 @@
         else
         {
             toastService.ShowError("No se ha podido modificar correctamente");
-        }
-    }
-
-    private async Task Eliminar()
-    {
-        var eliminado = await prestamosService.Eliminar(Prestamo.PrestamoId);
-
-        if (eliminado)
-        {
-            toastService.ShowSuccess("Se ha eliminado correctamente");
-            navigationManager.NavigateTo("/Prestamo/Index");
-        }
-        else
-        {
-            toastService.ShowError("No se ha podido eliminar correctamente");
         }
     }
 }
