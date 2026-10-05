@@ -1,6 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Internal;
-using Microsoft.VisualBasic;
 using RegistroEstudiantes.Context;
 using RegistroEstudiantes.Models;
 using System.Linq.Expressions;
