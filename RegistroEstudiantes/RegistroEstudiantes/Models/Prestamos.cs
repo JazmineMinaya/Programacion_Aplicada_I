@@ -21,6 +21,6 @@ namespace RegistroEstudiantes.Models
         public Estudiantes? Estudiante { get; set; }
 
         [ForeignKey("LibroId")]
-        public Libro? Libro { get; set; }
+        public virtual Libro? Libro { get; set; }
     }
 }
