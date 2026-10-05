@@ -116,48 +116,6 @@
     </div>
 </div>
 
-<style>
-    .paginacion-prestamos > div > div:first-child {
-        display: none;
-    }
-
-    .prestamos-grid {
-        width: 100%;
-    }
-
-    .prestamos-grid td {
-        padding-left: 15px !important;
-        padding-right: 15px !important;
-        vertical-align: middle;
-    }
-
-    .prestamos-grid th {
-        padding-left: 0 !important;
-        padding-right: 0 !important;
-    }
-
-    .prestamos-grid th button {
-        padding-left: 15px !important;
-        padding-right: 15px !important;
-        width: 100%;
-        justify-content: flex-start;
-    }
-
-    .prestamos-grid th:last-child,
-    .prestamos-grid td:last-child {
-        text-align: center !important;
-    }
-
-    .prestamos-grid th:last-child .col-title,
-    .prestamos-grid th:last-child button {
-        width: 100% !important;
-        justify-content: center !important;
-        text-align: center !important;
-        padding-left: 0 !important;
-        padding-right: 0 !important;
-    }
-</style>
-
 @code {
 
     public List<Prestamos> ListaPrestamos { get; set; } = new List<Prestamos>();
