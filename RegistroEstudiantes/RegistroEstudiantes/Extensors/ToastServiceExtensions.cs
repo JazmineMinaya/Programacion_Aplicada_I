@@ -18,8 +18,7 @@ public static class ToastServiceExtensions
     }
 
     // ShowSuccess method
-    public static ToastMessage ShowSuccess(this ToastService toastService, string customMessage = null,
-        string title = "Success")
+    public static ToastMessage ShowSuccess(this ToastService toastService, string customMessage = null, string title = "Success")
     {
         return toastService.ShowToast(ToastType.Success, title, customMessage);
     }
