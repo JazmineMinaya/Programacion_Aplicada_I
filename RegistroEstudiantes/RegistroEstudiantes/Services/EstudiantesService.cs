@@ -9,6 +9,23 @@ public class EstudiantesService(
     IDbContextFactory<Contexto> contextFactory
 ) : Aplicada1.Core.IService<Estudiantes, int>
 {
+    public async Task<bool> Guardar(Estudiantes estudiante)
+    {
+        if (await NombreExiste(estudiante.Nombres, estudiante.EstudianteId))
+        {
+            return false;
+        }
+
+        if (!await Existe(estudiante.EstudianteId))
+        {
+            return await Insertar(estudiante);
+        }
+        else
+        {
+            return await Modificar(estudiante);
+        }
+    }
+
     private async Task<bool> Existe(int estudianteId)
     {
         await using var contexto = await contextFactory.CreateDbContextAsync();
@@ -37,23 +54,6 @@ public class EstudiantesService(
         contexto.Update(estudiante);
         return await contexto
             .SaveChangesAsync() > 0;
-    }
-
-    public async Task<bool> Guardar(Estudiantes estudiante)
-    {
-        if (await NombreExiste(estudiante.Nombres, estudiante.EstudianteId))
-        {
-            return false;
-        }
-
-        if (!await Existe(estudiante.EstudianteId))
-        {
-            return await Insertar(estudiante);
-        }
-        else
-        {
-            return await Modificar(estudiante);
-        }
     }
 
     public async Task<Estudiantes?> Buscar(int estudianteId)
