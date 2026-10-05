@@ -17,6 +17,6 @@ namespace RegistroEstudiantes.Models
         public string Email { get; set; } = null!;
 
         [Required(ErrorMessage = "Este campo es requerido")]
-        public DateTime FechaNacimiento { get; set; } = DateTime.Today;
+        public DateTime FechaNacimiento { get; set; }
     }
 }
