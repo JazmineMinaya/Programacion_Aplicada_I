@@ -65,7 +65,7 @@
         Libro = await librosService.Buscar(LibroId);
     }
 
-    public async Task Modificar()
+    private async Task Modificar()
     {
         var creado = await librosService.Guardar(Libro);
 
