@@ -67,7 +67,7 @@
 
     public string Mensaje { get; set; } = string.Empty;
 
-    public async Task Guardar()
+    private async Task Guardar()
     {
         var creado = await estudiantesService.Guardar(Estudiante);
 
