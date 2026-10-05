@@ -60,10 +60,12 @@
 @Mensaje
 
 @code {
-    public Estudiantes Estudiante { get; set; } = new Estudiantes()
-    {
-        FechaNacimiento = DateTime.Today
-    };
+    public Estudiantes Estudiante { get; set; } = new Estudiantes();
+
+    protected override void OnInitialized()
+	{
+		Estudiante.FechaNacimiento = DateTime.Today
+	}
 
     private async Task Guardar()
     {
