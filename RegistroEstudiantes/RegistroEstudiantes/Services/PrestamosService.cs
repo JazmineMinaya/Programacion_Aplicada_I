@@ -88,8 +88,7 @@ public class PrestamosService(
         return await contexto.SaveChangesAsync() > 0;
     }
 
-    public async Task<List<Prestamos>> GetList(
-        Expression<Func<Prestamos, bool>> criterio)
+    public async Task<List<Prestamos>> GetList(Expression<Func<Prestamos, bool>> criterio)
     {
         await using var contexto = await contextFactory.CreateDbContextAsync();
 
