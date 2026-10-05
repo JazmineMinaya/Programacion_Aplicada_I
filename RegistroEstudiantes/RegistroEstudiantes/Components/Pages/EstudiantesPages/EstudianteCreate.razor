@@ -65,8 +65,6 @@
         FechaNacimiento = DateTime.Today
     };
 
-    public string Mensaje { get; set; } = string.Empty;
-
     private async Task Guardar()
     {
         var creado = await estudiantesService.Guardar(Estudiante);
