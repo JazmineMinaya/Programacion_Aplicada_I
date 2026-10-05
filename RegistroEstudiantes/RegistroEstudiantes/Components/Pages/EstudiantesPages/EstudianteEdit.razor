@@ -90,19 +90,4 @@
             toastService.ShowError("Ya existe un estudiante con ese nombre");
         }
     }
-
-    private async Task Eliminar()
-    {
-        var eliminado = await estudiantesService.Eliminar(Estudiante.EstudianteId);
-
-        if (eliminado)
-        {
-            toastService.ShowSuccess("Se ha eliminado correctamente");
-            navigationManager.NavigateTo("/Estudiante/Index");
-        }
-        else
-        {
-            toastService.ShowError("No se ha podido eliminar correctamente");
-        }
-    }
 }
