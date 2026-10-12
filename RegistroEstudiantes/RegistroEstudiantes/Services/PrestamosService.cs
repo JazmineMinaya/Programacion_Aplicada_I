@@ -86,6 +86,35 @@ public class PrestamosService(
         return await contexto.SaveChangesAsync() > 0;
     }
 
+    public async Task<bool> Devolver(int prestamoId, DateTime fechaDevolucion)
+    {
+        await using var contexto = await contextFactory.CreateDbContextAsync();
+
+        var prestamo = await contexto.Prestamos.FirstOrDefaultAsync(p => p.PrestamoId == prestamoId);
+
+        if (prestamo == null || prestamo.FechaDevolucion != null)
+        {
+            return false;
+        }
+
+        if (fechaDevolucion.Date < prestamo.FechaPrestamo.Date || fechaDevolucion.Date > DateTime.Today)
+        {
+            return false;
+        }
+
+        var libro = await contexto.Libros.FirstOrDefaultAsync(l => l.LibroId == prestamo.LibroId);
+
+        if (libro == null)
+        {
+            return false;
+        }
+
+        prestamo.FechaDevolucion = fechaDevolucion.Date;
+        libro.Disponible = true;
+
+        return await contexto.SaveChangesAsync() > 0;
+    }
+
     public async Task<List<Prestamos>> GetList(Expression<Func<Prestamos, bool>> criterio)
     {
         await using var contexto = await contextFactory.CreateDbContextAsync();

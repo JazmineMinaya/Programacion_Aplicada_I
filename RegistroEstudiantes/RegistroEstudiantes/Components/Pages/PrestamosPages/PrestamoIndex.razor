@@ -2,6 +2,7 @@
 @rendermode InteractiveServer
 
 @inject PrestamosService prestamosService
+@inject ToastService toastService
 
 <PageTitle>Registro de Préstamos</PageTitle>
 
@@ -58,18 +59,50 @@
                     <PropertyColumn Property="p => p.Estudiante!.Nombres" Title="Estudiante" Sortable="true" />
                     <PropertyColumn Property="p => p.Libro!.Titulo" Title="Libro" Sortable="true" />
                     <PropertyColumn Property="p => p.FechaPrestamo" Title="Fecha de Préstamo" Format="dd/MM/yyyy" Sortable="true" />
+                    <PropertyColumn Property="p => p.FechaDevolucion" Title="Fecha de Devolución" Format="dd/MM/yyyy" />
                     <TemplateColumn Title="Opciones" Align="Align.Center">
                         <a href="/Prestamo/Edit/@context.PrestamoId" class="btn btn-outline-primary bi bi-pencil-square"></a>
+
+                        @if (context.FechaDevolucion == null)
+                        {
+                            <button type="button" class="btn btn-outline-success bi bi-arrow-return-left ms-2" data-bs-toggle="modal" data-bs-target="#modalDevolucion" @onclick="() => MostrarModalDevolucion(context)"></button>
+                        }
                     </TemplateColumn>
                 </QuickGrid>
             </div>
 
         </div>
 
+        @* footer *@
         <div class="card-footer d-flex justify-content-between align-items-center">
-            <label>Cantidad: @ListaPrestamos.Count()</label>
+            <label><strong>Cantidad:</strong> @ListaPrestamos.Count()</label>
+            <label><strong>Promedio de días prestados:</strong> @PromedioDiasPrestados.ToString("0.##") días</label>
         </div>
 
+    </div>
+</div>
+
+@* Modal de devolución *@
+<div class="modal fade" id="modalDevolucion" tabindex="-1" aria-labelledby="modalDevolucionLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalDevolucionLabel">Devolución de Libro</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body">
+                <label class="form-label"><strong>Fecha de Devolución</strong></label>
+                <InputDate class="form-control" @bind-Value="FechaDevolucion" />
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal" @onclick="ConfirmarDevolucion">Confirmar Devolución</button>
+            </div>
+
+        </div>
     </div>
 </div>
 
@@ -79,9 +112,48 @@
     public string Filtro { get; set; } = string.Empty;
     public string ValorFiltro { get; set; } = string.Empty;
 
+    private int prestamoADevolver;
+    private DateTime FechaDevolucion = DateTime.Today;
+
     protected override async Task OnInitializedAsync()
     {
         ListaPrestamos = await prestamosService.GetList(p => p.PrestamoId > 0);
+    }
+
+    private double PromedioDiasPrestados
+    {
+        get
+        {
+            var prestamosDevueltos = ListaPrestamos
+                .Where(p => p.FechaDevolucion.HasValue)
+                .ToList();
+
+            if (prestamosDevueltos.Count == 0)
+                return 0;
+
+            return prestamosDevueltos.Average(p => (p.FechaDevolucion!.Value.Date - p.FechaPrestamo.Date).TotalDays);
+        }
+    }
+
+    private void MostrarModalDevolucion(Prestamos prestamo)
+    {
+        prestamoADevolver = prestamo.PrestamoId;
+        FechaDevolucion = DateTime.Today;
+    }
+
+    private async Task ConfirmarDevolucion()
+    {
+        var devuelto = await prestamosService.Devolver(prestamoADevolver, FechaDevolucion);
+
+        if (devuelto)
+        {
+            toastService.ShowSuccess("Libro devuelto correctamente");
+            ListaPrestamos = await prestamosService.GetList(p => p.PrestamoId > 0);
+        }
+        else
+        {
+            toastService.ShowError("No se pudo registrar la devolución");
+        }
     }
 
     private async Task Buscar()
