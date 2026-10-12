@@ -96,7 +96,6 @@
 </div>
 
 @code {
-
     public List<Libro> ListaLibros { get; set; } = new List<Libro>();
 
     public string Filtro { get; set; } = string.Empty;
@@ -104,7 +103,8 @@
 
     protected override async Task OnInitializedAsync()
     {
-        ListaLibros = await librosService.GetList(l => l.LibroId > 0);
+        var result = await librosService.GetList(l => l.LibroId > 0);
+        result.OnSuccess(libros => ListaLibros = libros);
     }
 
     private async Task Buscar()
@@ -113,24 +113,22 @@
         {
             if (Filtro == "Titulo")
             {
-                ListaLibros = await librosService.GetList(l => l.Titulo.ToLower().Contains(ValorFiltro.ToLower()));
+                var result = await librosService.GetList(l => l.Titulo.ToLower().Contains(ValorFiltro.ToLower()));
+                result.OnSuccess(libros => ListaLibros = libros);
             }
             else if (Filtro == "AnoPublicacion")
             {
                 if (int.TryParse(ValorFiltro, out int ano))
                 {
-                    ListaLibros = await librosService.GetList(l => l.AnoPublicacion == ano);
+                    var result = await librosService.GetList(l => l.AnoPublicacion == ano);
+                    result.OnSuccess(libros => ListaLibros = libros);
                 }
             }
         }
         else
-            ListaLibros = await librosService.GetList(l => l.LibroId > 0);
-    }
-
-    private async Task Restablecer()
-    {
-        ListaLibros = await librosService.GetList(l => l.LibroId > 0);
-        Filtro = string.Empty;
-        ValorFiltro = string.Empty;
+        {
+            var result = await librosService.GetList(l => l.LibroId > 0);
+            result.OnSuccess(libros => ListaLibros = libros);
+        }
     }
 }  

@@ -88,7 +88,6 @@
 </div>
 
 @code {
-
     public List<Estudiantes> ListaEstudiantes { get; set; } = new List<Estudiantes>();
 
     public string Filtro { get; set; } = string.Empty;
@@ -96,7 +95,8 @@
 
     protected override async Task OnInitializedAsync()
     {
-        ListaEstudiantes = await estudiantesService.GetList(e => e.EstudianteId > 0);
+        var result = await estudiantesService.GetList(e => e.EstudianteId > 0);
+        result.OnSuccess(estudiantes => ListaEstudiantes = estudiantes);
     }
 
     private async Task Buscar()
@@ -105,25 +105,24 @@
         {
             if (Filtro == "Nombres")
             {
-                ListaEstudiantes = await estudiantesService.GetList(e => e.Nombres.ToLower().Contains(ValorFiltro.ToLower()));
+                var result = await estudiantesService.GetList(e => e.Nombres.ToLower().Contains(ValorFiltro.ToLower()));
+                result.OnSuccess(estudiantes => ListaEstudiantes = estudiantes);
             }
             else if (Filtro == "Direccion")
             {
-                ListaEstudiantes = await estudiantesService.GetList(e => e.Direccion.ToLower().Contains(ValorFiltro.ToLower()));
+                var result = await estudiantesService.GetList(e => e.Direccion.ToLower().Contains(ValorFiltro.ToLower()));
+                result.OnSuccess(estudiantes => ListaEstudiantes = estudiantes);
             }
             else if (Filtro == "Email")
             {
-                ListaEstudiantes = await estudiantesService.GetList(e => e.Email.ToLower().Contains(ValorFiltro.ToLower()));
+                var result = await estudiantesService.GetList(e => e.Email.ToLower().Contains(ValorFiltro.ToLower()));
+                result.OnSuccess(estudiantes => ListaEstudiantes = estudiantes);
             }
         }
         else
-            ListaEstudiantes = await estudiantesService.GetList(e => e.EstudianteId > 0);
-    }
-
-    private async Task Restablecer()
-    {
-        ListaEstudiantes = await estudiantesService.GetList(e => e.EstudianteId > 0);
-        Filtro = string.Empty;
-        ValorFiltro = string.Empty;
+        {
+            var result = await estudiantesService.GetList(e => e.EstudianteId > 0);
+            result.OnSuccess(estudiantes => ListaEstudiantes = estudiantes);
+        }
     }
 }

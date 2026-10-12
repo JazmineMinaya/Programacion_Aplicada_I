@@ -74,16 +74,17 @@
 
     private async Task Guardar()
     {
-        var creado = await estudiantesService.Guardar(Estudiante);
+        var result = await estudiantesService.Guardar(Estudiante);
 
-        if (creado)
+        result.OnSuccess(() =>
         {
             toastService.ShowSuccess("Estudiante Guardado Correctamente");
             navigationManager.NavigateTo("/Estudiante/Index");
-        }
-        else
+        });
+
+        result.OnFailure(() =>
         {
             toastService.ShowError("Ya existe un estudiante con ese nombre");
-        }
+        });
     }
 }
