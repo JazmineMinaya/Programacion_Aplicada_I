@@ -65,16 +65,17 @@
 
     private async Task Guardar()
     {
-        var creado = await librosService.Guardar(Libro);
+        var result = await librosService.Guardar(Libro);
 
-        if (creado)
+        result.OnSuccess(() =>
         {
             toastService.ShowSuccess("Libro Guardado Correctamente");
             navigationManager.NavigateTo("/Libro/Index");
-        }
-        else
+        });
+
+        result.OnFailure(() =>
         {
             toastService.ShowError("Ya existe un libro con ese título");
-        }
+        });
     }
 }
