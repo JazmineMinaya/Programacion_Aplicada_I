@@ -65,6 +65,9 @@ namespace RegistroEstudiantes.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("CantidadDisponible")
+                        .HasColumnType("int");
+
                     b.Property<bool>("Disponible")
                         .HasColumnType("bit");
 
@@ -87,6 +90,9 @@ namespace RegistroEstudiantes.Migrations
 
                     b.Property<int>("EstudianteId")
                         .HasColumnType("int");
+
+                    b.Property<DateTime?>("FechaDevolucion")
+                        .HasColumnType("datetime2");
 
                     b.Property<DateTime>("FechaPrestamo")
                         .HasColumnType("datetime2");
