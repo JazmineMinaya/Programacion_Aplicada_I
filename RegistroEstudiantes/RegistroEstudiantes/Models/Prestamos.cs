@@ -17,6 +17,8 @@ public partial class Prestamos
     [Required(ErrorMessage = "Este campo es requerido")]
     public DateTime FechaPrestamo { get; set; }
 
+    public DateTime? FechaDevolucion { get; set; }
+
     [ForeignKey("EstudianteId")]
     public virtual Estudiantes? Estudiante { get; set; }
 
