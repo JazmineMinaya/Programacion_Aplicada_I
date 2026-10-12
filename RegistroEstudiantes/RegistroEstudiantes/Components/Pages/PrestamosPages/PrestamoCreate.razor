@@ -78,31 +78,35 @@
     public Prestamos Prestamo { get; set; } = new Prestamos();
 
     protected override void OnInitialized()
-	{
-		Prestamo.FechaPrestamo = DateTime.Today;
-	}
+    {
+        Prestamo.FechaPrestamo = DateTime.Today;
+    }
 
     public List<Estudiantes> ListaEstudiantes { get; set; } = new();
     public List<Libro> ListaLibros { get; set; } = new();
 
     protected override async Task OnInitializedAsync()
     {
-        ListaEstudiantes = await estudiantesService.GetList(e => e.EstudianteId > 0);
-        ListaLibros = await librosService.GetList(l => l.Disponible == true);
+        var estudiantesResult = await estudiantesService.GetList(e => e.EstudianteId > 0);
+        estudiantesResult.OnSuccess(estudiantes => ListaEstudiantes = estudiantes);
+
+        var librosResult = await librosService.GetList(l => l.Disponible == true);
+        librosResult.OnSuccess(libros => ListaLibros = libros);
     }
 
     private async Task Guardar()
     {
-        var creado = await prestamosService.Guardar(Prestamo);
+        var result = await prestamosService.Guardar(Prestamo);
 
-        if (creado)
+        result.OnSuccess(() =>
         {
             toastService.ShowSuccess("Préstamo Guardado Correctamente");
             navigationManager.NavigateTo("/Prestamo/Index");
-        }
-        else
+        });
+
+        result.OnFailure(() =>
         {
             toastService.ShowError("No se pudo realizar el préstamo");
-        }
+        });
     }
 }

@@ -111,38 +111,45 @@
 
     protected override async Task OnInitializedAsync()
     {
-        Prestamo = await prestamosService.Buscar(PrestamoId);
-        ListaEstudiantes = await estudiantesService.GetList(e => e.EstudianteId > 0);
-        ListaLibros = await librosService.GetList(l => l.Disponible == true || l.LibroId == Prestamo.LibroId);
+        var result = await prestamosService.Buscar(PrestamoId);
+        Prestamo = result.Value!;
+
+        var resultEstudiantes = await estudiantesService.GetList(e => e.EstudianteId > 0);
+        ListaEstudiantes = resultEstudiantes.Value;
+
+        var resultLibros = await librosService.GetList(l => l.Disponible == true || l.LibroId == Prestamo.LibroId);
+        ListaLibros = resultLibros.Value;
     }
 
     private async Task Modificar()
     {
-        var modificado = await prestamosService.Guardar(Prestamo);
+        var result = await prestamosService.Guardar(Prestamo);
 
-        if (modificado)
+        result.OnSuccess(() =>
         {
             toastService.ShowSuccess("Se ha modificado correctamente");
             navigationManager.NavigateTo("/Prestamo/Index");
-        }
-        else
+        });
+
+        result.OnFailure(() =>
         {
             toastService.ShowError("No se ha podido modificar correctamente");
-        }
+        });
     }
 
     private async Task Eliminar()
     {
-        var eliminado = await prestamosService.Eliminar(Prestamo.PrestamoId);
+        var result = await prestamosService.Eliminar(Prestamo.PrestamoId);
 
-        if (eliminado)
+        result.OnSuccess(() =>
         {
             toastService.ShowSuccess("Se ha eliminado correctamente");
             navigationManager.NavigateTo("/Prestamo/Index");
-        }
-        else
+        });
+
+        result.OnFailure(() =>
         {
             toastService.ShowError("No se ha podido eliminar correctamente");
-        }
+        });
     }
 }
