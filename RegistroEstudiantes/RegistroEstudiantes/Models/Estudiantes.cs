@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace RegistroEstudiantes.Models:
+namespace RegistroEstudiantes.Models;
 
 public partial class Estudiantes
 {

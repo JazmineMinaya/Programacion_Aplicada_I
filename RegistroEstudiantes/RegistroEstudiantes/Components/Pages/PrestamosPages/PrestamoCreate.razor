@@ -1,5 +1,5 @@
 ﻿@page "/Prestamo/Create"
-@rendermode InteractiveServe
+@rendermode InteractiveServer
 
 @inject PrestamosService prestamosService
 @inject EstudiantesService estudiantesService
@@ -31,7 +31,6 @@
                             <option value="@estudiante.EstudianteId">@estudiante.Nombres </option>
                         }
                     </InputSelect>
-
                     <ValidationMessage For="@(() => Prestamo.EstudianteId)" />
 
                 </div>
@@ -49,7 +48,6 @@
                             </option>
                         }
                     </InputSelect>
-
                     <ValidationMessage For="@(() => Prestamo.LibroId)" />
 
                 </div>
@@ -58,6 +56,7 @@
                 <div class="mb-3">
                     <label class="form-label"><strong>Fecha de Préstamo</strong></label>
                     <InputDate class="form-control" @bind-Value="Prestamo.FechaPrestamo"></InputDate>
+                    <ValidationMessage For="@(() => Prestamo.FechaPrestamo)" />
                 </div>
             </div>
 
