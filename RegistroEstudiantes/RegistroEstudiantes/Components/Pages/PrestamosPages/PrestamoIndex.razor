@@ -105,9 +105,8 @@
         </div>
     </div>
 </div>
-
+    
 @code {
-
     public List<Prestamos> ListaPrestamos { get; set; } = new List<Prestamos>();
     public string Filtro { get; set; } = string.Empty;
     public string ValorFiltro { get; set; } = string.Empty;
@@ -117,7 +116,8 @@
 
     protected override async Task OnInitializedAsync()
     {
-        ListaPrestamos = await prestamosService.GetList(p => p.PrestamoId > 0);
+        var result = await prestamosService.GetList(p => p.PrestamoId > 0);
+        ListaPrestamos = result.Value;
     }
 
     private double PromedioDiasPrestados
@@ -148,7 +148,9 @@
         if (devuelto)
         {
             toastService.ShowSuccess("Libro devuelto correctamente");
-            ListaPrestamos = await prestamosService.GetList(p => p.PrestamoId > 0);
+
+            var result = await prestamosService.GetList(p => p.PrestamoId > 0);
+            ListaPrestamos = result.Value;
         }
         else
         {
@@ -162,16 +164,19 @@
         {
             if (Filtro == "Estudiante")
             {
-                ListaPrestamos = await prestamosService.GetList(p => p.Estudiante!.Nombres.ToLower().Contains(ValorFiltro.ToLower()));
+                var result = await prestamosService.GetList(p => p.Estudiante!.Nombres.ToLower().Contains(ValorFiltro.ToLower()));
+                ListaPrestamos = result.Value;
             }
             else if (Filtro == "Libro")
             {
-                ListaPrestamos = await prestamosService.GetList(p => p.Libro!.Titulo.ToLower().Contains(ValorFiltro.ToLower()));
+                var result = await prestamosService.GetList(p => p.Libro!.Titulo.ToLower().Contains(ValorFiltro.ToLower()));
+                ListaPrestamos = result.Value;
             }
         }
         else
         {
-            ListaPrestamos = await prestamosService.GetList(p => p.PrestamoId > 0);
+            var result = await prestamosService.GetList(p => p.PrestamoId > 0);
+            ListaPrestamos = result.Value;
         }
     }
 }
