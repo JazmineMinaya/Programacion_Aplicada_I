@@ -7,7 +7,8 @@ public class Contexto : DbContext
 {
     public Contexto(DbContextOptions<Contexto> options) : base(options) { }
 
-    public virtual DbSet<Libro> Libros { get; set; }
-    public virtual DbSet<Estudiantes> Estudiantes { get; set; }
-    public virtual DbSet<Prestamos> Prestamos { get; set; }
+    public DbSet<Libro> Libros { get; set; }
+    public DbSet<Estudiantes> Estudiantes { get; set; }
+    public DbSet<Prestamos> Prestamos { get; set; }
+    public DbSet<Entradas> Entradas { get; set; }
 }
