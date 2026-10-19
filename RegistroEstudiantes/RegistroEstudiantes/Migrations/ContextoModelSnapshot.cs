@@ -22,6 +22,55 @@ namespace RegistroEstudiantes.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("RegistroEstudiantes.Models.Entradas", b =>
+                {
+                    b.Property<int>("EntradaId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("EntradaId"));
+
+                    b.Property<string>("Concepto")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("Fecha")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("Total")
+                        .HasColumnType("int");
+
+                    b.HasKey("EntradaId");
+
+                    b.ToTable("Entradas");
+                });
+
+            modelBuilder.Entity("RegistroEstudiantes.Models.EntradasDetalle", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("Cantidad")
+                        .HasColumnType("int");
+
+                    b.Property<int>("EntradaId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("LibroId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EntradaId");
+
+                    b.HasIndex("LibroId");
+
+                    b.ToTable("EntradasDetalle");
+                });
+
             modelBuilder.Entity("RegistroEstudiantes.Models.Estudiantes", b =>
                 {
                     b.Property<int>("EstudianteId")
@@ -65,7 +114,7 @@ namespace RegistroEstudiantes.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("CantidadDisponible")
+                    b.Property<int>("Cantidad")
                         .HasColumnType("int");
 
                     b.Property<bool>("Disponible")
@@ -109,6 +158,25 @@ namespace RegistroEstudiantes.Migrations
                     b.ToTable("Prestamos");
                 });
 
+            modelBuilder.Entity("RegistroEstudiantes.Models.EntradasDetalle", b =>
+                {
+                    b.HasOne("RegistroEstudiantes.Models.Entradas", "Entrada")
+                        .WithMany("EntradasDetalles")
+                        .HasForeignKey("EntradaId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("RegistroEstudiantes.Models.Libro", "Libro")
+                        .WithMany()
+                        .HasForeignKey("LibroId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Entrada");
+
+                    b.Navigation("Libro");
+                });
+
             modelBuilder.Entity("RegistroEstudiantes.Models.Prestamos", b =>
                 {
                     b.HasOne("RegistroEstudiantes.Models.Estudiantes", "Estudiante")
@@ -126,6 +194,11 @@ namespace RegistroEstudiantes.Migrations
                     b.Navigation("Estudiante");
 
                     b.Navigation("Libro");
+                });
+
+            modelBuilder.Entity("RegistroEstudiantes.Models.Entradas", b =>
+                {
+                    b.Navigation("EntradasDetalles");
                 });
 #pragma warning restore 612, 618
         }
