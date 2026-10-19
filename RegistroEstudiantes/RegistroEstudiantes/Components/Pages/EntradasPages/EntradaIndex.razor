@@ -1,0 +1,176 @@
+﻿@page "/Entrada/Index"
+
+@inject EntradasService entradasService
+@inject ToastService toastService
+
+<PageTitle>Registro de Entradas</PageTitle>
+
+<div class="container">
+    <div class="card shadow-lg">
+
+        <div class="card-header d-flex justify-content-between align-items-center mb-4">
+            <h5 class="card-title">Registro de Entradas</h5>
+            <a href="/Entrada/Create" class="btn btn-primary"><span class="bi bi-plus-square"></span> Crear</a>
+        </div>
+
+        <div class="card-body">
+
+            @* Labels *@
+            <div class="row">
+
+                @* Filtrar por *@
+                <div class="col-3">
+                    <label class="col-form-label"><strong>Filtrar por</strong></label>
+                </div>
+
+                @* Búsqueda *@
+                <div class="col-4">
+                    <label class="col-form-label"><strong>Búsqueda</strong></label>
+                </div>
+
+            </div>
+
+            @* Inputs y botones *@
+            <div class="row align-items-center">
+
+                @* Filtro *@
+                <div class="col-3">
+                    <InputSelect class="form-select" @bind-Value="Filtro">
+                        <option value="" selected disabled>Elija una opción</option>
+                        <option value="Concepto">Concepto</option>
+                        <option value="Fecha">Fecha</option>
+                    </InputSelect>
+                </div>
+
+                @* Búsqueda *@
+                <div class="col-4">
+                    <div class="input-group">
+                        <input class="form-control" @bind="ValorFiltro" placeholder="Buscar" />
+                        <button type="button" class="btn btn-outline-primary bi bi-search" @onclick="Buscar"></button>
+                    </div>
+                </div>
+
+                @* Restablecer *@
+                <div class="col-2">
+                    <button type="button" class="btn btn-outline-secondary bi bi-arrow-counterclockwise" @onclick="Restablecer"></button>
+                </div>
+
+                @* FiltroFecha *@
+                <div class="row mt-3">
+
+                    @* Desde *@
+                    <div class="col-3">
+                        <label class="col-form-label"><strong>Desde</strong></label>
+                        <InputDate class="form-control" @bind-Value="Desde"></InputDate>
+                    </div>
+
+                    @* Hasta *@
+                    <div class="col-3">
+                        <label class="col-form-label"><strong>Hasta</strong></label>
+                        <InputDate class="form-control" @bind-Value="Hasta"></InputDate>
+                    </div>
+
+                </div>
+
+            </div>
+
+            @* QuickGrid *@
+            <div class="grid">
+                <QuickGrid Items="ListaEntradas.AsQueryable()" Class="table table-hover mt-3">
+                    <PropertyColumn Property="e => e.EntradaId" Title="EntradaId" Sortable="true" />
+                    <PropertyColumn Property="e => e.Fecha" Title="Fecha" Format="dd/MM/yyyy" Sortable="true" />
+                    <PropertyColumn Property="e => e.Concepto" Title="Concepto" Sortable="true" />
+                    <PropertyColumn Property="e => e.Total" Title="Total" Sortable="true" />
+                    <TemplateColumn Title="Opciones" Align="Align.Center">
+                        <a href="/Entrada/Edit/@context.EntradaId" class="btn btn-outline-primary bi bi-pencil-square"></a>
+                    </TemplateColumn>
+                </QuickGrid>
+            </div>
+
+        </div>
+
+        @* footer *@
+        <div class="card-footer d-flex justify-content-between align-items-center">
+            <label><strong>Cantidad: </strong> @ListaEntradas.Count()</label>
+            <label><strong>Total: </strong> @TotalLibros</label>
+        </div>
+
+    </div>
+</div>
+
+@code {
+    public List<Entradas> ListaEntradas { get; set; } = new List<Entradas>();
+
+    public string Filtro { get; set; } = string.Empty;
+    public string ValorFiltro { get; set; } = string.Empty;
+
+    public DateTime? Desde { get; set; }
+    public DateTime? Hasta { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var result = await entradasService.GetList(e => e.EntradaId > 0);
+        ListaEntradas = result.Value;
+    }
+
+    private int TotalLibros
+    {
+        get
+        {
+            return ListaEntradas.Sum(e => e.Total);
+        }
+    }
+
+    private async Task Buscar()
+    {
+        if (Filtro == "Fecha")
+        {
+            if (Desde == null || Hasta == null)
+            {
+                toastService.ShowError("Seleccione las fechas Desde y Hasta");
+                return;
+            }
+
+            if (Desde > Hasta)
+            {
+                toastService.ShowError("El rango de fechas no es válido");
+                return;
+            }
+
+            var desde = Desde.Value.Date;
+            var hasta = Hasta.Value.Date.AddDays(1);
+
+            var result = await entradasService.GetList(e => e.Fecha >= desde && e.Fecha < hasta);
+
+            ListaEntradas = result.Value;
+        }
+        else if (Filtro == "Concepto")
+        {
+            if (string.IsNullOrWhiteSpace(ValorFiltro))
+            {
+                toastService.ShowError("Escriba un concepto para buscar");
+                return;
+            }
+
+            var valor = ValorFiltro.Trim().ToLower();
+            var result = await entradasService.GetList(e => e.Concepto.ToLower().Contains(valor));
+
+            ListaEntradas = result.Value;
+        }
+        else
+        {
+            toastService.ShowError("Seleccione un filtro");
+        }
+    }
+
+    private async Task Restablecer()
+    {
+        var result = await entradasService.GetList(e => e.EntradaId > 0);
+        ListaEntradas = result.Value;
+
+        Filtro = string.Empty;
+        ValorFiltro = string.Empty;
+        Desde = null;
+        Hasta = null;
+    }
+}
