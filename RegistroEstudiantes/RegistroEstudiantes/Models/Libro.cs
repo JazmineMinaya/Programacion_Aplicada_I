@@ -18,5 +18,5 @@ public partial class Libro
 
     public bool Disponible { get; set; } = true;
 
-    public int CantidadDisponible { get; set; }
+    public int Cantidad { get; set; }
 }
