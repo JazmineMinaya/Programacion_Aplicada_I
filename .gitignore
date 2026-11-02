@@ -6,3 +6,5 @@ obj/
 **/TestResults/
 **/bin/
 **/obj/
+**/appsettings.Development.json
+**/appsettings.json
